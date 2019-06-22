@@ -26,36 +26,36 @@ struct PreIncrementable : crtp<T, PreIncrementable>
 template <typename T>
 struct Addable : crtp<T, Addable>
 {
-    T operator+(T const& other) const { return T(this->underlying().get() + other.get()); }
+    constexpr T operator+(T const& other) const { return T(this->underlying().get() + other.get()); }
 };
 
 template <typename T>
 struct Subtractable : crtp<T, Subtractable>
 {
-    T operator-(T const& other) const { return T(this->underlying().get() - other.get()); }
+    constexpr T operator-(T const& other) const { return T(this->underlying().get() - other.get()); }
 };
     
 template <typename T>
 struct Multiplicable : crtp<T, Multiplicable>
 {
-    T operator*(T const& other) const { return T(this->underlying().get() * other.get()); }
+    constexpr T operator*(T const& other) const { return T(this->underlying().get() * other.get()); }
 };
 
 template <typename T>
 struct Negatable : crtp<T, Negatable>
 {
-    T operator-() const { return T(-this->underlying().get()); }
+    constexpr T operator-() const { return T(-this->underlying().get()); }
 };
     
 template <typename T>
 struct Comparable : crtp<T, Comparable>
 {
-    bool operator<(T const& other) const  { return this->underlying().get() < other.get(); }
-    bool operator>(T const& other) const  { return other.get() < this->underlying().get(); }
-    bool operator<=(T const& other) const { return !(*this > other); }
-    bool operator>=(T const& other) const { return !(*this < other); }
-    bool operator==(T const& other) const { return !(*this < other || *this > other); }
-    bool operator!=(T const& other) const { return !(*this == other); }
+    constexpr bool operator<(T const& other) const  { return this->underlying().get() < other.get(); }
+    constexpr bool operator>(T const& other) const  { return other.get() < this->underlying().get(); }
+    constexpr bool operator<=(T const& other) const { return !(*this > other); }
+    constexpr bool operator>=(T const& other) const { return !(*this < other); }
+    constexpr bool operator==(T const& other) const { return !(*this < other || *this > other); }
+    constexpr bool operator!=(T const& other) const { return !(*this == other); }
 };
 
 template <typename T>
@@ -70,7 +70,7 @@ struct ImplicitlyConvertibleTo
     template <typename T>
     struct templ : crtp<T, templ>
     {
-        operator Destination() const
+        constexpr operator Destination() const
         {
             return this->underlying().get();
         }
@@ -96,11 +96,11 @@ struct FunctionCallable;
 template <typename T, typename Parameter, template<typename> class... Skills>
 struct FunctionCallable<NamedType<T, Parameter, Skills...>> : crtp<NamedType<T, Parameter, Skills...>, FunctionCallable>
 {
-    operator T const&() const
+    constexpr operator T const&() const
     {
         return this->underlying().get();
     }
-    operator T&()
+    constexpr operator T&()
     {
         return this->underlying().get();
     }

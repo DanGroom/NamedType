@@ -34,7 +34,7 @@ public:
 
     // conversions
     using ref = NamedType<T&, Parameter, Skills...>;
-    operator ref ()
+    constexpr operator ref ()
     {
         return ref(value_);
     }
