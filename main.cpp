@@ -1,3 +1,6 @@
+
+//uses an old version of catch bundled in the lib repo
+#define _SILENCE_CXX17_UNCAUGHT_EXCEPTION_DEPRECATION_WARNING //only for the old catch, not NamedType
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 
@@ -22,16 +25,16 @@ decltype(auto) tee(T&& value)
 }
 
 using Meter = fluent::NamedType<double, struct MeterParameter, fluent::Addable, fluent::Comparable>;
-constexpr Meter operator"" _meter(unsigned long long value) { return Meter(value); }
+constexpr Meter operator"" _meter(unsigned long long value) { return Meter(static_cast<double>(value)); }
 //Meter operator"" _meter(long double value) { return Meter(value); }
 
 using Width = fluent::NamedType<Meter, struct WidthParameter>;
 using Height = fluent::NamedType<Meter, struct HeightParameter>;
 
-class Rectangle
+class ARectangle
 {
 public:
-    constexpr Rectangle(Width width, Height height) : width_(width.get()), height_(height.get()) {}
+    constexpr ARectangle(Width width, Height height) : width_(width.get()), height_(height.get()) {}
     constexpr Meter getWidth() const { return width_; }
     constexpr Meter getHeight() const { return height_; }
 
@@ -42,14 +45,14 @@ private:
 
 TEST_CASE("Basic usage")
 {
-    Rectangle r(Width(10_meter), Height(12_meter));
+    ARectangle r(Width(10_meter), Height(12_meter));
     REQUIRE(r.getWidth().get() == 10);
     REQUIRE(r.getHeight().get() == 12);
 }
 
 TEST_CASE("Basic usage at compile time")
 {
-    constexpr Rectangle r(Width(10_meter), Height(12_meter));
+    constexpr ARectangle r(Width(10_meter), Height(12_meter));
     COMPILE_TIME_REQUIRE(r.getWidth().get() == 10);
     COMPILE_TIME_REQUIRE(r.getHeight().get() == 12);
 }
@@ -57,6 +60,7 @@ TEST_CASE("Basic usage at compile time")
 using NameRef = fluent::NamedType<std::string&, struct NameRefParameter>;
 
 
+//DG: this doesn't compile under clang or msvc
 /*
 void changeValue(const NameRef name)
 {
