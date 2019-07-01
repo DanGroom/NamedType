@@ -14,13 +14,13 @@ namespace fluent
 template <typename T>
 struct Incrementable : crtp<T, Incrementable>
 {
-    T& operator+=(T const& other) { this->underlying().get() += other.get(); return this->underlying(); }
+    constexpr T& operator+=(T const& other) { this->underlying().get() += other.get(); return this->underlying(); }
 };
 
 template <typename T>
 struct PreIncrementable : crtp<T, PreIncrementable>
 {
-    T& operator++() { ++this->underlying().get(); return this->underlying(); }
+    constexpr T& operator++() { ++this->underlying().get(); return this->underlying(); }
 };
 
 template <typename T>
